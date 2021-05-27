@@ -1,4 +1,5 @@
 const userRepository = require("../repository/userRepository");
+const helper = require("../helper")
 
 module.exports = {
   getUser(req, res) {
@@ -40,6 +41,15 @@ module.exports = {
     let accountNumber = req.body.accountNumber;
     let emailAddress = req.body.emailAddress;
     let identityNumber = req.body.identityNumber;
+
+    if (!helper.isEmail(emailAddress)){
+      res.status(401).send({
+        error: true,
+        message: "Email not valid",
+      });
+      return
+    }
+
     userRepository
       .create(userName, accountNumber, emailAddress, identityNumber)
       .then((result) => {
@@ -62,6 +72,15 @@ module.exports = {
       emailAddress: req.body.emailAddress,
       identityNumber: req.body.identityNumber,
     };
+
+    if (!helper.isEmail(req.body.emailAddress)){
+      res.status(401).send({
+        error: true,
+        message: "Email not valid",
+      });
+      return
+    }
+
     userRepository
       .update(req.body.id, param)
       .then((result) => {
